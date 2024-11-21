@@ -3,36 +3,22 @@ export type LeadStatus = 'completed' | 'in_progress' | 'negotiation' | 'new_lead
 export interface Lead {
   id: string;
   name: string;
+  email: string;
+  phone: string;
   address: string;
-  //parcelImage: string;
-  /*poolDimensions: {
-    length: number;
-    width: number;
-    depth: number;
-  };*/
   poolDimensions: string;
-  /*parcelDimensions: {
-    length: number;
-    width: number;
-  };*/
   parcelDimensions: string;
-  accessRating: number; // 1-5
-  //material: 'gresite' | 'porcelain';
+  accessRating: string;
   material: string;
-  //materialLink: string;
   estimatedBudget: number;
-  //roi: number;
-  //status: LeadStatus;
-  //source: 'tiktok' | 'whatsapp' | 'instagram' | 'phone';
-  /*coordinates: {
-    lat: number;
-    lng: number;
-  };*/
+  conversationSummary: string;
   createdAt: string;
-  //lastContact: string;
-  //nearbyProjects?: string[];
+  status: string;
+  coordinates: {
+    lng: number;
+    lat: number;
+  };
 }
-
 export interface DashboardMetrics {
   totalLeads: number;
   convertedLeads: number;

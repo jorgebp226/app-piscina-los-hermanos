@@ -2,20 +2,44 @@ import React from 'react';
 import { Phone, Mail, MapPin, Clock, TrendingUp, Calendar } from 'lucide-react';
 import { Lead } from '../../types';
 import dayjs from 'dayjs';
+import { Badge } from '../../ui/badge';
 
 interface LeadCardProps {
   lead: Lead;
   onClick: (lead: Lead) => void;
 }
 
-const LeadCard: React.FC<LeadCardProps> = ({ lead, onClick }) => {
-  const statusColors = {
-    completed: 'bg-green-100 text-green-800',
-    in_progress: 'bg-orange-100 text-orange-800',
-    negotiation: 'bg-red-100 text-red-800',
-    new_lead: 'bg-blue-100 text-blue-800'
-  };
+const getStatusVariant = (status: string) => {
+  switch (status) {
+    case 'completed':
+      return 'bg-green-100 text-green-800';
+    case 'in_progress':
+      return 'bg-orange-100 text-orange-800';
+    case 'negotiation':
+      return 'bg-red-100 text-red-800';
+    case 'new_lead':
+      return 'bg-blue-100 text-blue-800';
+    default:
+      return 'bg-gray-100 text-gray-800';
+  }
+};
 
+const getStatusLabel = (status: string) => {
+  switch (status) {
+    case 'completed':
+      return 'Completado';
+    case 'in_progress':
+      return 'En Progreso';
+    case 'negotiation':
+      return 'En Negociación';
+    case 'new_lead':
+      return 'Nuevo Lead';
+    default:
+      return 'Estado Desconocido';
+  }
+};
+
+const LeadCard: React.FC<LeadCardProps> = ({ lead, onClick }) => {
   const sourceIcons = {
     tiktok: '🎵',
     whatsapp: '💬',
@@ -26,26 +50,16 @@ const LeadCard: React.FC<LeadCardProps> = ({ lead, onClick }) => {
   return (
     <div 
       onClick={() => onClick(lead)}
-      className="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer border border-gray-100"
+      className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow cursor-pointer"
     >
       <div className="flex justify-between items-start mb-3">
         <div>
           <h3 className="font-semibold text-gray-900">{lead.name}</h3>
-          <div className="flex items-center gap-2 text-sm text-gray-500 mt-1">
-            <span className="flex items-center gap-1">
-              {sourceIcons[lead.source]}
-              <span className="capitalize">{lead.source}</span>
-            </span>
-            <span>•</span>
-            <span className="flex items-center gap-1">
-              <Clock className="w-4 h-4" />
-              {dayjs(lead.createdAt).format('DD/MM/YYYY')}
-            </span>
-          </div>
+          <p className="text-sm text-gray-500">{lead.phone}</p>
         </div>
-        <span className={`px-3 py-1 rounded-full text-xs font-medium ${statusColors[lead.status]}`}>
-          {lead.status.replace('_', ' ')}
-        </span>
+        <Badge variant={getStatusVariant(lead.status)}>
+          {getStatusLabel(lead.status)}
+        </Badge>
       </div>
 
       <div className="space-y-2">
@@ -57,50 +71,18 @@ const LeadCard: React.FC<LeadCardProps> = ({ lead, onClick }) => {
         <div className="grid grid-cols-2 gap-3 mt-3">
           <div className="bg-gray-50 rounded-lg p-2">
             <span className="text-xs text-gray-500">Presupuesto est.</span>
-            <p className="font-semibold text-gray-900">{lead.estimatedBudget.toLocaleString()}€</p>
+            <p className="font-semibold text-gray-900">
+              {new Intl.NumberFormat('es-ES', { 
+                style: 'currency', 
+                currency: 'EUR' 
+              }).format(lead.estimatedBudget)}
+            </p>
           </div>
           <div className="bg-gray-50 rounded-lg p-2">
-            <span className="text-xs text-gray-500">ROI esperado</span>
-            <div className="flex items-center gap-1">
-              <TrendingUp className="w-4 h-4 text-green-500" />
-              <p className="font-semibold text-gray-900">{lead.roi}%</p>
-            </div>
+            <span className="text-xs text-gray-500">Dimensiones</span>
+            <p className="font-semibold text-gray-900">{lead.poolDimensions}</p>
           </div>
         </div>
-
-        <div className="flex gap-2 mt-3">
-          <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-gray-100">
-            <img 
-              src={lead.parcelImage} 
-              alt="Parcela" 
-              className="object-cover w-full h-full"
-            />
-          </div>
-          <div className="flex-1">
-            <div className="text-sm text-gray-600">
-              <p>Piscina: {lead.poolDimensions.length}x{lead.poolDimensions.width}m</p>
-              <p>Parcela: {lead.parcelDimensions.length}x{lead.parcelDimensions.width}m</p>
-              <p>Material: {lead.material}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex justify-between items-center mt-4 pt-3 border-t border-gray-100">
-        <div className="flex gap-2">
-          <button className="p-2 rounded-lg text-gray-500 hover:bg-gray-50">
-            <Phone className="w-4 h-4" />
-          </button>
-          <button className="p-2 rounded-lg text-gray-500 hover:bg-gray-50">
-            <Mail className="w-4 h-4" />
-          </button>
-          <button className="p-2 rounded-lg text-gray-500 hover:bg-gray-50">
-            <Calendar className="w-4 h-4" />
-          </button>
-        </div>
-        <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
-          Ver detalles →
-        </button>
       </div>
     </div>
   );
