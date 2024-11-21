@@ -4,30 +4,33 @@ export interface Lead {
   id: string;
   name: string;
   address: string;
-  parcelImage: string;
-  poolDimensions: {
+  //parcelImage: string;
+  /*poolDimensions: {
     length: number;
     width: number;
     depth: number;
-  };
-  parcelDimensions: {
+  };*/
+  poolDimensions: string;
+  /*parcelDimensions: {
     length: number;
     width: number;
-  };
+  };*/
+  parcelDimensions: string;
   accessRating: number; // 1-5
-  material: 'gresite' | 'porcelain';
-  materialLink: string;
+  //material: 'gresite' | 'porcelain';
+  material: string;
+  //materialLink: string;
   estimatedBudget: number;
-  roi: number;
-  status: LeadStatus;
-  source: 'tiktok' | 'whatsapp' | 'instagram' | 'phone';
-  coordinates: {
+  //roi: number;
+  //status: LeadStatus;
+  //source: 'tiktok' | 'whatsapp' | 'instagram' | 'phone';
+  /*coordinates: {
     lat: number;
     lng: number;
-  };
+  };*/
   createdAt: string;
-  lastContact: string;
-  nearbyProjects?: string[];
+  //lastContact: string;
+  //nearbyProjects?: string[];
 }
 
 export interface DashboardMetrics {
