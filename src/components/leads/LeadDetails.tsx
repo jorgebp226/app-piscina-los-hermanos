@@ -52,7 +52,7 @@ const LeadDetails: React.FC<LeadDetailsProps> = ({ lead, onClose, nearbyProjects
     }
   };
 
-  const currentStatus = statusConfig[lead.status];
+  const currentStatus = statusConfig[lead.status as keyof typeof statusConfig];
 
   return (
     <div className="fixed inset-0 bg-secondary-900/75 z-50 flex items-start justify-center overflow-y-auto pt-4 pb-4">
@@ -91,21 +91,20 @@ const LeadDetails: React.FC<LeadDetailsProps> = ({ lead, onClose, nearbyProjects
               <div className="card p-4 space-y-2">
                 <div className="flex items-center gap-2 text-secondary-500">
                   <Ruler className="w-4 h-4" />
-                  <h3 className="text-sm font-medium">Medidas de Piscina</h3>
+                  <h3 className="text-sm font-medium">Dimensiones de la Piscina</h3>
                 </div>
                 <p className="text-secondary-900">
-                  {lead.poolDimensions.length}x{lead.poolDimensions.width}m 
-                  <span className="text-secondary-500"> (Prof. {lead.poolDimensions.depth}m)</span>
+                  {`${lead.poolDimensions.length}x${lead.poolDimensions.width}m`}
                 </p>
               </div>
 
               <div className="card p-4 space-y-2">
                 <div className="flex items-center gap-2 text-secondary-500">
                   <Home className="w-4 h-4" />
-                  <h3 className="text-sm font-medium">Medidas de Parcela</h3>
+                  <h3 className="text-sm font-medium">Tamaño de la Parcela</h3>
                 </div>
                 <p className="text-secondary-900">
-                  {lead.parcelDimensions.length}x{lead.parcelDimensions.width}m
+                  {`${lead.parcelDimensions.area}m²`}
                 </p>
               </div>
 
@@ -120,30 +119,9 @@ const LeadDetails: React.FC<LeadDetailsProps> = ({ lead, onClose, nearbyProjects
               <div className="card p-4 space-y-2">
                 <div className="flex items-center gap-2 text-secondary-500">
                   <Share2 className="w-4 h-4" />
-                  <h3 className="text-sm font-medium">Valoración de Acceso</h3>
+                  <h3 className="text-sm font-medium">Resumen de IA</h3>
                 </div>
-                <div className="flex items-center gap-1">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className={`w-2 h-6 rounded-sm transition-colors ${
-                        i < lead.accessRating ? 'bg-primary-500' : 'bg-secondary-200'
-                      }`}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Imagen de la parcela */}
-            <div className="card p-4">
-              <h3 className="text-sm font-medium text-secondary-500 mb-3">Imagen de la Parcela</h3>
-              <div className="relative rounded-lg overflow-hidden h-48">
-                <img
-                  src={lead.parcelImage}
-                  alt="Parcela"
-                  className="object-cover w-full h-full"
-                />
+                <p className="text-secondary-900">{lead.conversationSummary}</p>
               </div>
             </div>
 
@@ -156,36 +134,70 @@ const LeadDetails: React.FC<LeadDetailsProps> = ({ lead, onClose, nearbyProjects
                 </p>
               </div>
               
-              <div className="card p-4">
-                <h3 className="text-sm font-medium text-secondary-500">ROI Esperado</h3>
-                <div className="flex items-center gap-2 mt-2">
-                  <TrendingUp className="w-5 h-5 text-success-500" />
-                  <p className="text-2xl font-semibold text-secondary-900">{lead.roi}%</p>
+              {lead.roi !== undefined && (
+                <div className="card p-4">
+                  <h3 className="text-sm font-medium text-secondary-500">ROI Esperado</h3>
+                  <div className="flex items-center gap-2 mt-2">
+                    <TrendingUp className="w-5 h-5 text-success-500" />
+                    <p className="text-2xl font-semibold text-secondary-900">{lead.roi}%</p>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
             {/* Información de contacto y seguimiento */}
-            <div className="card p-4 space-y-4">
-              <h3 className="text-sm font-medium text-secondary-500">Información de Seguimiento</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex items-center gap-3">
-                  <Clock className="w-5 h-5 text-secondary-400" />
-                  <div>
-                    <p className="text-sm text-secondary-500">Creado el</p>
-                    <p className="text-sm font-medium text-secondary-900">
-                      {new Date(lead.createdAt).toLocaleDateString()}
-                    </p>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="card p-4 space-y-4">
+                <h3 className="text-sm font-medium text-secondary-500">Información de Contacto</h3>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <Phone className="w-5 h-5 text-secondary-400" />
+                    <div>
+                      <p className="text-sm text-secondary-500">Teléfono</p>
+                      <p className="text-sm font-medium text-secondary-900">{lead.phone}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Mail className="w-5 h-5 text-secondary-400" />
+                    <div>
+                      <p className="text-sm text-secondary-500">Email</p>
+                      <p className="text-sm font-medium text-secondary-900">{lead.email}</p>
+                    </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <Calendar className="w-5 h-5 text-secondary-400" />
-                  <div>
-                    <p className="text-sm text-secondary-500">Último contacto</p>
-                    <p className="text-sm font-medium text-secondary-900">
-                      {new Date(lead.lastContact).toLocaleDateString()}
-                    </p>
+              </div>
+
+              <div className="card p-4 space-y-4">
+                <h3 className="text-sm font-medium text-secondary-500">Fechas Importantes</h3>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <Clock className="w-5 h-5 text-secondary-400" />
+                    <div>
+                      <p className="text-sm text-secondary-500">Creado el</p>
+                      <p className="text-sm font-medium text-secondary-900">
+                        {new Date(lead.createdAt).toLocaleDateString('es-ES', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        })}
+                      </p>
+                    </div>
                   </div>
+                  {lead.lastContact && (
+                    <div className="flex items-center gap-3">
+                      <Calendar className="w-5 h-5 text-secondary-400" />
+                      <div>
+                        <p className="text-sm text-secondary-500">Último contacto</p>
+                        <p className="text-sm font-medium text-secondary-900">
+                          {new Date(lead.lastContact).toLocaleDateString('es-ES', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                          })}
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -198,13 +210,15 @@ const LeadDetails: React.FC<LeadDetailsProps> = ({ lead, onClose, nearbyProjects
                   {nearbyProjects.map((project) => (
                     <div key={project.id} className="card p-3">
                       <div className="flex items-start gap-3">
-                        <div className="relative w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
-                          <img 
-                            src={project.parcelImage} 
-                            alt="Proyecto cercano" 
-                            className="object-cover w-full h-full"
-                          />
-                        </div>
+                        {project.parcelImage && (
+                          <div className="relative w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+                            <img 
+                              src={project.parcelImage} 
+                              alt="Proyecto cercano" 
+                              className="object-cover w-full h-full"
+                            />
+                          </div>
+                        )}
                         <div className="min-w-0">
                           <p className="font-medium text-secondary-900 truncate">{project.name}</p>
                           <p className="text-sm text-secondary-500 truncate">{project.address}</p>
@@ -224,24 +238,32 @@ const LeadDetails: React.FC<LeadDetailsProps> = ({ lead, onClose, nearbyProjects
           <div className="sticky bottom-0 bg-white border-t border-secondary-200 p-4 rounded-b-2xl">
             <div className="flex justify-between items-center">
               <div className="flex gap-3">
-                <button className="btn btn-primary">
+                <a 
+                  href={`tel:${lead.phone}`}
+                  className="btn btn-primary flex items-center gap-2"
+                >
                   <Phone className="w-4 h-4" />
                   Llamar
-                </button>
-                <button className="btn btn-primary">
+                </a>
+                <a 
+                  href={`mailto:${lead.email}`}
+                  className="btn btn-primary flex items-center gap-2"
+                >
                   <Mail className="w-4 h-4" />
                   Email
-                </button>
+                </a>
               </div>
-              <a 
-                href={lead.materialLink} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="btn btn-secondary"
-              >
-                <ExternalLink className="w-4 h-4" />
-                Ver material
-              </a>
+              {lead.materialLink && (
+                <a 
+                  href={lead.materialLink} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="btn btn-secondary flex items-center gap-2"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  Ver material
+                </a>
+              )}
             </div>
           </div>
         </div>

@@ -1,4 +1,3 @@
-// src/components/talky/VapiMeeting.tsx
 import React, { useState, useEffect } from 'react';
 import Vapi from '@vapi-ai/web';
 import { VapiMeetingProps } from '../types/talky';

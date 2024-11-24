@@ -47,6 +47,15 @@ const LeadCard: React.FC<LeadCardProps> = ({ lead, onClick }) => {
     phone: '📞'
   };
 
+  // Formatea las dimensiones de la piscina
+  const poolDimensionsText = `${lead.poolDimensions.length}x${lead.poolDimensions.width}m`;
+  
+  // Formatea el presupuesto
+  const formattedBudget = new Intl.NumberFormat('es-ES', { 
+    style: 'currency', 
+    currency: 'EUR' 
+  }).format(lead.estimatedBudget);
+
   return (
     <div 
       onClick={() => onClick(lead)}
@@ -71,16 +80,21 @@ const LeadCard: React.FC<LeadCardProps> = ({ lead, onClick }) => {
         <div className="grid grid-cols-2 gap-3 mt-3">
           <div className="bg-gray-50 rounded-lg p-2">
             <span className="text-xs text-gray-500">Presupuesto est.</span>
-            <p className="font-semibold text-gray-900">
-              {new Intl.NumberFormat('es-ES', { 
-                style: 'currency', 
-                currency: 'EUR' 
-              }).format(lead.estimatedBudget)}
-            </p>
+            <p className="font-semibold text-gray-900">{formattedBudget}</p>
           </div>
           <div className="bg-gray-50 rounded-lg p-2">
             <span className="text-xs text-gray-500">Dimensiones</span>
-            <p className="font-semibold text-gray-900">{lead.poolDimensions}</p>
+            <p className="font-semibold text-gray-900">{poolDimensionsText}</p>
+          </div>
+          <div className="bg-gray-50 rounded-lg p-2">
+            <span className="text-xs text-gray-500">Parcela</span>
+            <p className="font-semibold text-gray-900">{lead.parcelDimensions.area}m²</p>
+          </div>
+          <div className="bg-gray-50 rounded-lg p-2">
+            <span className="text-xs text-gray-500">Creado</span>
+            <p className="font-semibold text-gray-900">
+              {dayjs(lead.createdAt).format('DD/MM/YYYY')}
+            </p>
           </div>
         </div>
       </div>

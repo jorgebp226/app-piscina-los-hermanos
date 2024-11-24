@@ -1,6 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { Clock } from 'lucide-react';
-import { TimerProps } from '../../types/talky';
+import { TimerProps } from '../types/talky';
+
+// Componente del icono memorizado
+const ClockIcon = memo(() => (
+  <Clock className="w-4 h-4 mr-2" />
+));
+ClockIcon.displayName = 'ClockIcon';
 
 export const Timer: React.FC<TimerProps> = ({ startTime = new Date() }) => {
   const [time, setTime] = useState(0);
@@ -24,7 +30,7 @@ export const Timer: React.FC<TimerProps> = ({ startTime = new Date() }) => {
 
   return (
     <div className="inline-flex items-center px-3 py-1 bg-blue-100 rounded-full text-blue-700">
-      <Clock className="w-4 h-4 mr-2" />
+      <ClockIcon />
       <span className="font-medium">{formatTime(time)}</span>
     </div>
   );
